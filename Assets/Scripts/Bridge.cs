@@ -5,11 +5,7 @@ using Random = UnityEngine.Random;
 
 public class Bridge : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject _fire;
-    [SerializeField]
-    private GameObject _player;
-    private Outline _outline;
+    public event Action PlayerEnteredBridgeArea;
     private Rigidbody[] _rigidbodies;
     private NavMeshObstacle _navMeshObstacle;
     
@@ -18,7 +14,6 @@ public class Bridge : MonoBehaviour
 
     private void Awake()
     {
-        _outline = _player.GetComponent<Outline>();
         _navMeshObstacle = GetComponent<NavMeshObstacle>();
         _rigidbodies = GetComponentsInChildren<Rigidbody>();
     }
@@ -45,15 +40,9 @@ public class Bridge : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-        if (collider != null && _outline.OutlineWidth == 0)
+        if (collider.CompareTag(GlobalConstants.PLAYER_TAG))
         {
-            Break();
+            PlayerEnteredBridgeArea?.Invoke();
         }
-    }
-    
-    
-    private void OnTriggerExit(Collider collider)
-    {
-        _fire.SetActive(true);
     }
 }
